@@ -1,0 +1,14 @@
+
+
+.mapa__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.fadeOut {
+	opacity: 0;
+	transition: 10.0s;
+}

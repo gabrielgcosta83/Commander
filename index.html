@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+		<title>War Commander</title>
+		<meta name="viewport" content="width=device-width initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./reset.css">
+        <link rel="stylesheet" href="./cabecalho.css">
+        <link rel="stylesheet" href="./rodape.css">
+        <link rel="stylesheet" href="./index.css">
+    </head>
+    <body>
+        <header>
+            <div class="cabecalho__container">
+                <h1 class="cabecalho__titulo">War Commander</h1>
+            </div>
+        </header>
+        <main>
+            <section class="mapa__container">
+                <canvas id="mapa__area"></canvas>
+                <p id="error_msg">Mensagens</p>
+            </section>
+
+            <section class="acoes">
+                <div class="acoes__inserir__unidade">
+                    <button id="button__add" class="button">Inserir Unidade</button>
+                    <button id="button__move" class="button">Mover Unidade</button>
+                    <form>
+                        <p>Selecione o Time</p>
+                        <input type="radio" id="blue" name="team" value="blue">
+                        <label for="blue">Azul</label><br>
+                        <input type="radio" id="red" name="team" value="red">
+                        <label for="red">Vermelho</label><br>                        
+                    </form>
+                </div>
+            </section>
+            
+            
+
+        </main>
+        <footer>
+            <div class="rodape__container">
+                <p>Desenvolvido por Gabriel Costa - 2022</p>
+            </div>
+        </footer>
+        
+        <script src="index.js"></script>
+        <script src="unidade.js"></script>
+        <script src="mapa.js"></script>
+        
+        
+    </body>
