@@ -8,6 +8,8 @@ let Map = {
         this.canvas.width = 1109;
         this.canvas.height = 1109;
         this.context = this.canvas.getContext("2d");
+        this.context.drawImage(img,0,0);
+        this.MapArray = this.context.getImageData(0,0,this.canvas.width,this.canvas.height).data;
         this.interval = setInterval(updateAllMap, 100);
     },
     clear : function() {

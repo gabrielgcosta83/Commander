@@ -102,12 +102,21 @@ function checkCoord(coord,unit) {
         return false; 
 }
 
-function checkRoad(coord,unit) {
+function getRGB(coord) {
     //buscar estrada em um raio de 5 pixel
+    const MapArray = Map.MapArray;
+    const pixelColor = [ MapArray[(Map.Width*coord[1] + coord[0]) * 4],
+        MapArray[(Map.Width*coord[1] + coord[0]) * 4 + 1],
+        MapArray[(Map.Width*coord[1] + coord[0]) * 4 + 2], 
+        255 ];
     
-    
-    const pixelColor = Map.context.getImageData(coord[0],coord[1],10,10).data;
-    const roadColor = [116,95,40,255];
+    return pixelColor;
+}
+
+
+function checkRoad(coord) {
+    const pixelColor = getRGB(coord);
+    const roadColor = [0,0,0,255];
     console.log(pixelColor,roadColor)
     if (pixelColor == roadColor) {
         console.log("Unidade na estrada")
