@@ -3,7 +3,7 @@ class Unit {
     constructor(coord, team) {
         this.id = unitTable.length;
         this.UnitSize = 20;
-        this.coord = [(coord[0] - (this.UnitSize / 2)),(coord[1] - (this.UnitSize / 2))];
+        this.coord = coord;
         this.team = team;
         this.speed = 1;
         this.isMovingX = false;
@@ -37,13 +37,14 @@ class Unit {
 
 function addUnitToClick(mapa) { //Adiciona unidade no mapa
     mapa.addEventListener("click", function (pos) {
-        const coord = [pos.offsetX, pos.offsetY];
+        const coord = adjCoord([pos.offsetX, pos.offsetY],20);
         const team = teamSelected();
         if (team == null) {
             showErrorMsg("Voce deve selecionar um time");
             return;
         } else {
             let unit = new Unit(coord,team);
+            checkRoad(coord,team);
             unit.addToTable();
         }
         
@@ -52,7 +53,6 @@ function addUnitToClick(mapa) { //Adiciona unidade no mapa
 
 function teamSelected() {
     const checkboxes = document.querySelectorAll('input[name="team"]:checked')
-    console.log(checkboxes);
     if (checkboxes.length === 0) {
         return null;
     } else { 
@@ -100,4 +100,24 @@ function checkCoord(coord,unit) {
         return true;
     else
         return false; 
+}
+
+function checkRoad(coord,unit) {
+    //buscar estrada em um raio de 5 pixel
+    
+    
+    const pixelColor = Map.context.getImageData(coord[0],coord[1],10,10).data;
+    const roadColor = [116,95,40,255];
+    console.log(pixelColor,roadColor)
+    if (pixelColor == roadColor) {
+        console.log("Unidade na estrada")
+    } else {
+        console.log("Unidada fora da estrada")
+    }
+    // estrada = pixel da coord na cor marrom
+    // se coord estiver na estrada 
+    //     true
+    // senao 
+    //     false
+        
 }

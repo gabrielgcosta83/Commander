@@ -1,21 +1,6 @@
 
 let unitTable = [];
-
-
-// Canvas
-let Map = {
-    canvas : document.getElementById("mapa__area"),
-    start : function() {
-        this.canvas.width = 768;
-        this.canvas.height = 768;
-        this.context = this.canvas.getContext("2d");
-        this.interval = setInterval(updateAllMap, 100);
-    },
-    clear : function() {
-        this.context.fillStyle = "darkgreen";
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    },
-}
+let img = document.getElementById("map_img");
 
 Map.start();
 updateAllMap();
