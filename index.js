@@ -10,7 +10,8 @@ let Map = {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.context = this.canvas.getContext("2d");
-        // this.MapArray = this.context.getImageData(0,0,this.canvas.width,this.canvas.height).data;
+        this.context.drawImage(img,0,0);
+        this.MapArray = this.context.getImageData(0,0,this.canvas.width,this.canvas.height).data;
         this.interval = setInterval(updateAllMap, 100);
     },
     clear : function() {
@@ -39,14 +40,15 @@ buttonAdd.addEventListener("click", function(event) {
     addUnitToClick(Map.canvas);
 });
 
- //Clica para Mover Unidade
+// //  Clica para Mover Unidade
 // buttonMove.addEventListener("click", function(event) {
-//     showMsg("Clique na unidade que deseja mover")
 //     event.preventDefault();
-//     moveUnitToClick(Map.canvas);
+//     showMsg("Clique na unidade que deseja mover")
 // });
 
 Map.canvas.addEventListener("click",function(event) {
     event.preventDefault();
+    showMsg("Clique na unidade que deseja mover")
     testButtonClick(Map.canvas);
+    moveUnitToClick(Map.canvas);
 })

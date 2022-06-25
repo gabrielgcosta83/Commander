@@ -1,5 +1,6 @@
 
 let unitTable = [];
+let pointTable = [];
 let img = document.getElementById("map_img");
 
 Map.start();
@@ -11,6 +12,9 @@ function updateAllMap() {
     if (unitTable.length > 0) {
         unitUpdate();
     }
+    if (pointTable.length > 0) {
+        pointUpdate();
+    }
 }
 
 function unitUpdate() {
@@ -21,24 +25,35 @@ function unitUpdate() {
     })
 }
 
+function pointUpdate() {
+    pointTable.forEach(point => {
+        drawPoint(point.coord,point.color);
+    })
+}
+
 function drawUnit(unit) {
     Map.context.fillStyle = unit.team;
-    Map.context.fillRect(unit.coord[0], unit.coord[1], 20, 20);
+    Map.context.fillRect(unit.coord[0] - (unit.size/2), unit.coord[1] - (unit.size/2), 20, 20);
+}
+
+function drawPoint(coord,color) {
+    Map.context.fillStyle = color;
+    Map.context.fillRect(coord[0], coord[1], 5, 5);
 }
 
 function drawUnitMoving(unit) {
     Map.context.strokeStyle = "white"
-    Map.context.strokeRect(unit.coord[0], unit.coord[1], 20, 20);
+    Map.context.strokeRect(unit.coord[0] - (unit.size/2), unit.coord[1] - (unit.size/2), 20, 20);
     Map.context.beginPath();
-    Map.context.moveTo((unit.coord[0] + 10) , (unit.coord[1] + 10));
-    Map.context.lineTo((unit.destCoord[0] + 10), (unit.destCoord[1] + 10));
+    Map.context.moveTo(unit.coord[0] , unit.coord[1]);
+    Map.context.lineTo(unit.destCoord[0], unit.destCoord[1]);
     Map.context.stroke();
 }
 
 function drawUnitSelected(unit) {
     if (unit.isSelected == true) {
         Map.context.strokeStyle = "white";
-        Map.context.strokeRect(unit.coord[0], unit.coord[1], 20, 20);
+        Map.context.strokeRect(unit.coord[0] - (unit.size/2), unit.coord[1] - (unit.size/2), 20, 20);
     }
 }
     
