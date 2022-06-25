@@ -90,6 +90,13 @@ function moveUnitToClick(mapa) {
     }, { once: true })
 }
 
+function testButtonClick(mapa) {
+    mapa.addEventListener("click", function (pos) {
+        const newCoord = adjCoord([pos.offsetX, pos.offsetY],20);
+        console.log(getRGB(newCoord));
+    }, { once: true })
+}
+
 function adjCoord(coord,size) {
     const adjCoord = [coord[0] - (size / 2), coord[1] - (size / 2)];
     return adjCoord;

@@ -48,5 +48,5 @@ buttonAdd.addEventListener("click", function(event) {
 
 Map.canvas.addEventListener("click",function(event) {
     event.preventDefault();
-    moveUnitToClick(Map.canvas);
+    testButtonClick(Map.canvas);
 })
