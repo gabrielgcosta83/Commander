@@ -4,15 +4,16 @@ const buttonAdd = document.getElementById("button__add");
 // Canvas
 let Map = {
     canvas : document.getElementById("mapa__area"),
+    width : 1109,
+    height : 1109,
     start : function() {
-        this.canvas.width = 1109;
-        this.canvas.height = 1109;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
         this.context = this.canvas.getContext("2d");
+        // this.MapArray = this.context.getImageData(0,0,this.canvas.width,this.canvas.height).data;
         this.interval = setInterval(updateAllMap, 100);
     },
     clear : function() {
-        // this.context.fillStyle = "darkgreen";
-        // this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.context.drawImage(img,0,0);
     },
 }
