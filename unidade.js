@@ -33,6 +33,19 @@ class Unit {
             showMsg("Movendo Unidade...");
         }
     }
+
+    set movementX(state) {
+        this.isMovingX = state;
+    }
+
+    set movementY(state) {
+        this.isMovingY = state;
+    }
+
+    set selected(state) {
+        this.isSelected = state;
+    }
+
 }
 
 //Adiciona unidade no mapa
@@ -68,15 +81,15 @@ function teamSelected() {
     }
 }
 
-function addUnitToTable(coord, team) {
-    let id = unitTable.length;
-    const unit = {
-            id: id, 
-            coord: coord,
-            team: team
-        }
-    unitTable.push(unit);
-}
+// function addUnitToTable(coord, team) {
+//     let id = unitTable.length;
+//     const unit = {
+//             id: id, 
+//             coord: coord,
+//             team: team
+//         }
+//     unitTable.push(unit);
+// }
 
 function addPointToTable(coord,color) {
     const point = {
@@ -99,10 +112,10 @@ function moveUnitToClick(mapa) {
                     const isRoad = checkRoad(destCoord);
                     if (isRoad == null) {
                         showErrorMsg("As unidades só se movem em estradas");     
-                        unit.isSelected = false;                
+                        unit.selected = false;                        
                     } else {
                         unit.movement(destCoord);
-                        unit.isSelected = false;
+                        unit.selected = false;
                     }           
               }, { once: true })
             } else {
@@ -119,7 +132,7 @@ function testButtonClick(mapa) {
     }, { once: true })
 }
 
-//Ajusta coordenada ao centro da unidade
+//Ajusta centro da unidade ao click
 function adjCoord(coord,size) {
     const adjCoord = [coord[0] - (size / 2), coord[1] - (size / 2)];
     return adjCoord;
@@ -202,7 +215,6 @@ function findColor(coord, testColor, distance) {
 
 function checkRoad(coord) {
     // addPointToTable(coord,"red");
-    const roadColor = [0,0,0,255];
     const roadCoord = findColor(coord, roadColor, 10);
     // addPointToTable(roadCoord, "yellow");
     return roadCoord;

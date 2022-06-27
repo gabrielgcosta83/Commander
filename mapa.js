@@ -2,6 +2,7 @@
 let unitTable = [];
 let pointTable = [];
 let img = document.getElementById("map_img");
+const roadColor = [0,0,0,255];
 
 Map.start();
 updateAllMap();
@@ -38,7 +39,7 @@ function drawUnit(unit) {
 
 function drawPoint(coord,color) {
     Map.context.fillStyle = color;
-    Map.context.fillRect(coord[0], coord[1], 5, 5);
+    Map.context.fillRect(coord[0], coord[1], 1, 1);
 }
 
 function drawUnitMoving(unit) {
@@ -57,12 +58,31 @@ function drawUnitSelected(unit) {
     }
 }
     
+function testRoad(coord) {
+    const color = getRGB(coord);
+    return (checkColor(color, roadColor))
+}
+
 
 function moveUnit(unit) {
     if (unit.isMovingX == true) {
         drawUnitMoving(unit);
-        if (unit.coord[0] > unit.destCoord[0]) { unit.coord[0] = unit.coord[0] - unit.speed; }
-        if (unit.coord[0] < unit.destCoord[0]) { unit.coord[0] = unit.coord[0] + unit.speed; }
+        // if (unit.coord[0] > unit.destCoord[0] && testRoad([(unit.coord[0] - unit.speed),unit.coord[1]])) { unit.coord[0] = unit.coord[0] - unit.speed; }
+        if (unit.coord[0] > unit.destCoord[0]) {
+            if (testRoad([(unit.coord[0] - unit.speed),unit.coord[1]])) {
+                unit.coord[0] = unit.coord[0] - unit.speed;
+            } else if (testRoad([(unit.coord[0] + unit.speed),unit.coord[1]])) {
+                unit.coord[0] = unit.coord[0] + unit.speed;
+            }
+        }
+        // if (unit.coord[0] < unit.destCoord[0] && testRoad([(unit.coord[0] + unit.speed),unit.coord[1]])) { unit.coord[0] = unit.coord[0] + unit.speed; }
+        if (unit.coord[0] < unit.destCoord[0]) {
+            if (testRoad([(unit.coord[0] + unit.speed),unit.coord[1]])) {
+                unit.coord[0] = unit.coord[0] + unit.speed;
+            } else if (testRoad([(unit.coord[0] - unit.speed),unit.coord[1]])) {
+                unit.coord[0] = unit.coord[0] - unit.speed;
+            }
+        }
         if (unit.coord[0] == unit.destCoord[0] && unit.isMovingY == true) { unit.isMovingX = false; }
         if (unit.coord[0] == unit.destCoord[0] && unit.isMovingY == false) { 
             unit.isMovingX = false; 
@@ -71,8 +91,21 @@ function moveUnit(unit) {
     }
     if (unit.isMovingY == true) {
         drawUnitMoving(unit);
-        if (unit.coord[1] > unit.destCoord[1]) { unit.coord[1] = unit.coord[1] - unit.speed; }
-        if (unit.coord[1] < unit.destCoord[1]) { unit.coord[1] = unit.coord[1] + unit.speed; }
+        if (unit.coord[1] > unit.destCoord[1]) {
+            if (testRoad([unit.coord[0],(unit.coord[1] - unit.speed)])) {
+                unit.coord[1] = unit.coord[1] - unit.speed;
+            } else if (testRoad([unit.coord[0],(unit.coord[1] + unit.speed)])) {
+                unit.coord[1] = unit.coord[1] + unit.speed;
+            }
+        }
+        // if (unit.coord[1] < unit.destCoord[1] && testRoad([unit.coord[0],(unit.coord[1] + unit.speed)])) { unit.coord[1] = unit.coord[1] + unit.speed; }
+        if (unit.coord[1] < unit.destCoord[1]) {
+            if (testRoad([unit.coord[0],(unit.coord[1] + unit.speed)])) {
+                unit.coord[1] = unit.coord[1] + unit.speed;
+            } else if (testRoad([unit.coord[0],(unit.coord[1] - unit.speed)])) {
+                unit.coord[1] = unit.coord[1] - unit.speed;
+            }
+        }
         if (unit.coord[1] == unit.destCoord[1] && unit.isMovingX == true) { unit.isMovingY = false; }
         if (unit.coord[1] == unit.destCoord[1] && unit.isMovingX == false) { 
             unit.isMovingY = false;

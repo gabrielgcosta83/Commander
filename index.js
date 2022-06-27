@@ -52,3 +52,7 @@ Map.canvas.addEventListener("click",function(event) {
     testButtonClick(Map.canvas);
     moveUnitToClick(Map.canvas);
 })
+
+Map.canvas.addEventListener("mousemove", function(event) {
+    showMsg(event.offsetX + "," + event.offsetY);
+})
