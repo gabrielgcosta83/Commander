@@ -1,99 +1,76 @@
+//Calcula o caminho mais curto e retorna o path
+function bfs(startCoord, endCoord) {
+    let visitedMap = createfalseMap(CanvasMap.width, CanvasMap.height); // cria matriz de visitados
+    let roadMap = createRoadMap(CanvasMap.width, visitedMap); // cria matriz de estradas
 
-const image = Map.MapArray;
-let roadMap = createArray(Map.width, Map.height);
-let visitedMap =  createArray(Map.width, Map.height);
+    const rowQ = []; // Variaveis do queue
+    const colQ = [];
+    history = new Map(); // Historico do passo a passo
 
-for (let i = 0; i < Map.width; i++) {
-    for (let j = 0; j < Map.width; j++) {
-        visitedMap[i][j] = false;
-    }
-}
+    //Adiciona primeiro ponto ao queue
+    rowQ.push(startCoord[0]);
+    colQ.push(startCoord[1]);
 
-for (let i = 0; i < Map.MapArray.length ; i += 4 ) {
-    const coord = indexToCoord(i, Map.width);
-    const x = coord[0];
-    const y = coord[1];
-    const pixelColor = [Map.MapArray[i], Map.MapArray[i+1], Map.MapArray[i+2], Map.MapArray[i+3]];
+    //Define primeiro ponto como visitado
+    visitedMap[startCoord[0],startCoord[1]] = true;
 
-    if (checkColor(pixelColor, roadColor)) {
-        roadMap[x][y] = 1;
-    } else { 
-        roadMap[x][y] = 0;
-    }
-}
+    //Define primeiro ponto na lista de passos
+    history.set[startCoord.toString(),null];
 
-function createArray(length) {
-    var arr = new Array(length || 0),
-        i = length;
-
-    if (arguments.length > 1) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        while(i--) arr[length-1 - i] = createArray.apply(this, args);
-    }
-
-    return arr;
-}
-
-const C = Map.width;
-const R = Map.height;
-const startPoint = [308,863];
-const endPoint = [473,894];
-
-const rowQ = [];
-const colQ = [];
-
-let reachedEnd = false;
-
-let nodeTable = [];
-
-let dr = [1,-1,0,0,1,-1,1,-1];
-let dc = [0,0,-1,1,1,-1,-1,1];
-
-function solve() {
-    rowQ.push(startPoint[0]);
-    colQ.push(startPoint[1]);
-    visitedMap[startPoint[0],startPoint[1]] = true;
-
+    //Inicia a rodar o queue
     while ( rowQ.length > 0 ) {
-        const r = rowQ[0];
-        const c = colQ[0];
-        rowQ.splice(0,1);
-        colQ.splice(0,1);
+        //Define coordenadas do queue
+        let r = rowQ[0]; 
+        let c = colQ[0];
 
-        if (endPoint[0] == r && endPoint[1] == c) {
-            reachedEnd = true;
-            break;
+        //Retira do queue
+        rowQ.shift();
+        colQ.shift();
+
+        //Verifica se chegou no ponto final
+        if (endCoord[0] == r && endCoord[1] == c) {
+            let path = [];
+            while ([r] != startCoord[0] && c != startCoord[1]) { //Percorre o historico do ultimo ao primeiro ponto
+                path.push([r,c]);
+                let coord = [r,c];
+                let prevCoord = history.get(coord.toString());
+                r = prevCoord[0];
+                c = prevCoord[1];
+            }
+
+            return path.reverse() // retorna o caminho encontrado
         }
-        explore_neighbors(r,c);
+
+        explore_neighbors(r,c,roadMap);
     }
 
-        if (reachedEnd) {
-            console.log("Solucao encontrada: ", endPoint);
-            return;
-        } else {
-            console.log("Solucao nao encontrada");
-            return;
-        }
+    return null;
 }
 
-function explore_neighbors(r,c)  {
+//Mapeia coordenadas adjacentes e adiciona ao queue
+function explore_neighbors(r,c,roadMap)  {
+    const dr = [1,-1,0,0,1,-1,1,-1]; // direções pra cima, pra baixo e diagonais
+    const dc = [0,0,-1,1,1,-1,-1,1];
+
     for (let i = 0; i < 8 ; i++) {
         let rr = r + dr[i];
         let cc = c + dc[i];
         
-        if (rr < 0 || cc < 0) {  continue }
-        if (rr > R || cc > C) {  continue }
+        // Verifica se está dentro do mapa
+        if (rr < 0 || cc < 0) continue
+        if (rr > CanvasMap.height || cc > CanvasMap.width) continue
 
-        if (visitedMap[rr][cc] == true ) { continue }  
+        if (visitedMap[rr][cc] == true ) { continue }  // verifica se o ponto ja foi visitado
 
-        if (roadMap[rr][cc] == 0) { continue }
+        if (roadMap[rr][cc] == 0) { continue } // verifica se é estrada
 
-        addPointToTable([rr,cc],"yellow");
+        //Adiciona ao queue, marca como visitado e adiciona no Map de Historico
         rowQ.push(rr);
         colQ.push(cc);
         visitedMap[rr][cc] = true;
-        nodeTable.push([rr,cc]);
-    }
+        history.set([rr,cc].toString(),[r,c]);
+        }
+
 }
 
 

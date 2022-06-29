@@ -2,7 +2,7 @@ const buttonMove = document.getElementById("button__move");
 const buttonAdd = document.getElementById("button__add");
 
 // Canvas
-let Map = {
+let CanvasMap = {
     canvas : document.getElementById("mapa__area"),
     width : 1109,
     height : 1109,
@@ -37,7 +37,7 @@ function showErrorMsg(errorMsg) {
 buttonAdd.addEventListener("click", function(event) {  
     event.preventDefault();
     showMsg("Clique na posição desejada")
-    addUnitToClick(Map.canvas);
+    addUnitToClick(CanvasMap.canvas);
 });
 
 // //  Clica para Mover Unidade
@@ -46,13 +46,13 @@ buttonAdd.addEventListener("click", function(event) {
 //     showMsg("Clique na unidade que deseja mover")
 // });
 
-Map.canvas.addEventListener("click",function(event) {
+CanvasMap.canvas.addEventListener("click",function(event) {
     event.preventDefault();
     showMsg("Clique na unidade que deseja mover")
-    testButtonClick(Map.canvas);
+    testButtonClick(CanvasMap.canvas);
     moveUnitToClick(Map.canvas);
 })
 
-Map.canvas.addEventListener("mousemove", function(event) {
+CanvasMap.canvas.addEventListener("mousemove", function(event) {
     showMsg(event.offsetX + "," + event.offsetY);
 })

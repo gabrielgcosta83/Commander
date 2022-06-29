@@ -10,6 +10,7 @@ class Unit {
         this.isMovingY = false;
         this.isSelected = false;
         this.destCoord = [];
+        this.movementPath = [];
     }
 
     setAdjCoord(newCoord) { // Corrige coordenadas do clique
@@ -34,18 +35,9 @@ class Unit {
         }
     }
 
-    set movementX(state) {
-        this.isMovingX = state;
-    }
-
-    set movementY(state) {
-        this.isMovingY = state;
-    }
-
-    set selected(state) {
-        this.isSelected = state;
-    }
-
+    setPath(path) {
+        this.movementPath = path;
+    }        
 }
 
 //Adiciona unidade no mapa
@@ -81,16 +73,6 @@ function teamSelected() {
     }
 }
 
-// function addUnitToTable(coord, team) {
-//     let id = unitTable.length;
-//     const unit = {
-//             id: id, 
-//             coord: coord,
-//             team: team
-//         }
-//     unitTable.push(unit);
-// }
-
 function addPointToTable(coord,color) {
     const point = {
         coord: coord,
@@ -102,35 +84,47 @@ function addPointToTable(coord,color) {
 
 function moveUnitToClick(mapa) {
     mapa.addEventListener("click", function (pos) {
-        const newCoord = [pos.offsetX, pos.offsetY];
+        const newCoord = [pos.offsetX, pos.offsetY]; // determina posição do Click
+        
         unitTable.forEach(unit => {
-            if (checkCoordUnit(newCoord,unit)) {
+            if (!checkCoordUnit(newCoord,unit)) { // verifica se clicou em uma unidade
+                showErrorMsg("Você deve clicar em uma unidade");
+
+            
+            } else { // Se clicou na unidade
                 showMsg("Clique na posição que deseja mover")
                 unit.isSelected = true;
-                mapa.addEventListener("click", function(pos) {
-                    const destCoord = [pos.offsetX, pos.offsetY];
-                    const isRoad = checkRoad(destCoord);
+                mapa.addEventListener("click", function(pos) { 
+                    const destCoord = [pos.offsetX, pos.offsetY]; // Determina o click da nova posicao
+                    const isRoad = checkRoad(destCoord); // Verifica se é uma estrada
                     if (isRoad == null) {
                         showErrorMsg("As unidades só se movem em estradas");     
                         unit.selected = false;                        
+
+                    // Se for estrada, encontra e define menor caminho e inicia o movimento.
                     } else {
-                        unit.movement(destCoord);
-                        unit.selected = false;
+                        const path = bfs(unit.Coord, destCoord);
+                        if (path == null) {
+                            showErrorMsg("Nenhum caminho encontrado")
+                        }
+                        else {
+                            unit.movement(destCoord);
+                            unit.setPath(path);
+                            unit.selected = false;
+                        }
                     }           
               }, { once: true })
-            } else {
-              showErrorMsg("Você deve clicar em uma unidade");
             }
         });
     }, { once: true })
 }
 
-function testButtonClick(mapa) {
-    mapa.addEventListener("click", function (pos) {
-        const newCoord = [pos.offsetX, pos.offsetY];
-        checkRoad(newCoord);
-    }, { once: true })
-}
+// function testButtonClick(mapa) {
+//     mapa.addEventListener("click", function (pos) {
+//         const newCoord = [pos.offsetX, pos.offsetY];
+//         checkRoad(newCoord);
+//     }, { once: true })
+// }
 
 //Ajusta centro da unidade ao click
 function adjCoord(coord,size) {
@@ -150,9 +144,9 @@ function checkCoordUnit(coord,unit) {
 
 //retorna corRGB do Mapa em coord
 function getRGB(coord) {
-    const pixelColor = [ Map.MapArray[(Map.width * coord[1] + coord[0]) * 4],
-        Map.MapArray[(Map.width*coord[1] + coord[0]) * 4 + 1],
-        Map.MapArray[(Map.width*coord[1] + coord[0]) * 4 + 2], 
+    const pixelColor = [ CanvasMap.MapArray[(CanvasMap.width * coord[1] + coord[0]) * 4],
+        CanvasMap.CanvasMapArray[(CanvasMap.width*coord[1] + coord[0]) * 4 + 1],
+        CanvasMap.MapArray[(CanvasMap.width*coord[1] + coord[0]) * 4 + 2], 
         255 ];
     
     return pixelColor;
@@ -188,7 +182,7 @@ function indexToCoord(index, width) {
 function findColor(coord, testColor, distance) {
     
     //constroi array do ret
-    const rectImageData = Map.context.getImageData(coord[0], coord[1], distance, distance).data;
+    const rectImageData = CanvasMap.context.getImageData(coord[0], coord[1], distance, distance).data;
 
     //encontra index da cor
     const rectMatchColorIndex = rectImageData.findIndex(findColorIndex);
