@@ -26,16 +26,6 @@ class Unit {
         if (destCoord != this.coord) {
             this.isMoving = true;
         }       
-        // if (destCoord[0] != this.coord[0]) {
-        //     this.isMovingX = true;
-        //     this.destCoord[0] = destCoord[0];
-        //     showMsg("Movendo Unidade...");
-        // }
-        // if (destCoord[1] != this.coord[1]) {
-        //     this.isMovingY = true;
-        //     this.destCoord[1] = destCoord[1];
-        //     showMsg("Movendo Unidade...");
-        // }
     }
 
     setPath(path) {
@@ -85,41 +75,40 @@ function addPointToTable(coord,color) {
     pointTable.push(point);
 }
 
-function moveUnitToClick(mapa) {
-    mapa.addEventListener("click", function (pos) {
-        const newCoord = [pos.offsetX, pos.offsetY]; // determina posição do Click
-        
-        unitTable.forEach(unit => {
+function moveUnitToClick(newCoord) {
+   unitTable.forEach(unit => {
             if (!checkCoordUnit(newCoord,unit)) { // verifica se clicou em uma unidade
                 showErrorMsg("Você deve clicar em uma unidade");
                 return;
             } else { // Se clicou na unidade
                 showMsg("Clique na posição que deseja mover")
                 unit.isSelected = true;
+                CanvasMap.canvas.removeEventListener("click",moveUnitToClick)
                 mapa.addEventListener("click", function(pos) { 
                     const destCoord = [pos.offsetX, pos.offsetY]; // Determina o click da nova posicao
                     const isRoad = checkRoad(destCoord); // Verifica se é uma estrada
                     if (isRoad == null) {
                         showErrorMsg("As unidades só se movem em estradas");     
-                        unit.selected = false;                    
+                        unit.selected = false;
+                        CanvasMap.canvas.addEventListener("click",MapClickSelect);                    
 
                     // Se for estrada, encontra e define menor caminho e inicia o movimento.
                     } else {
                         const path = getPath(unit.coord, destCoord);
                         if (path == null) {
                             showErrorMsg("Nenhum caminho encontrado")
+                            CanvasMap.canvas.addEventListener("click",MapClickSelect);
                         }
                         else {
                             unit.movement(destCoord);
                             unit.setPath(path);
                             unit.selected = false;
+                            CanvasMap.canvas.addEventListener("click",MapClickSelect);
                         }
                     }           
               }, { once: true })
             }
-        });
-    }, { once: true })
-}
+        })
 
 // function testButtonClick(mapa) {
 //     mapa.addEventListener("click", function (pos) {
