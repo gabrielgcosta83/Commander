@@ -69,6 +69,8 @@ function testRoad(coord) {
 
 
 function moveUnit(unit) {
+
+    //Otimizar, basta fazer a unidade caminhar ao proximo indice do path. Em caso speed != 1, pula x indices.
     if (unit.isMoving == true) {
         drawUnitMoving(unit);
         let path = unit.movementPath;
