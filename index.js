@@ -54,12 +54,13 @@ buttonAdd.addEventListener("click", function(event) {
 //     showMsg("Clique na unidade que deseja mover")
 // });
 
-CanvasMap.canvas.addEventListener("click",function(event) {
+CanvasMap.canvas.addEventListener("click",MapClickSelect);
+
+function MapClickSelect(event) {
     event.preventDefault();
-    showMsg("Clique na unidade que deseja mover")
-    // testButtonClick(CanvasMap.canvas);
-    moveUnitToClick(CanvasMap.canvas);
-})
+    const newCoord = [pos.offsetX, pos.offsetY];
+    moveUnitToClick(newCoord);
+}
 
 CanvasMap.canvas.addEventListener("mousemove", function(event) {
     let pixelColor = getRGB([event.offsetX, event.offsetY]);
