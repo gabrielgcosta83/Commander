@@ -26,7 +26,8 @@ function createfalseMap(width, height) {
 }
 
 //Cria matriz binária para estradas
-function createRoadMap(width, falseMap) {
+function createRoadMap(width,height) {
+    let roadMap = createArray(width,height);
     for (let i = 0; i < CanvasMap.MapArray.length ; i += 4 ) { //Percorre cada pixel da ImageData do Mapa
         //Define a coordenada do Mapa
         const coord = indexToCoord(i, width); 
@@ -34,14 +35,16 @@ function createRoadMap(width, falseMap) {
         const y = coord[1];
 
         // Encontra cor da coordenada
+        
         const pixelColor = [CanvasMap.MapArray[i], CanvasMap.MapArray[i+1], CanvasMap.MapArray[i+2], CanvasMap.MapArray[i+3]];
-    
+
         // Se for uma estrada, marca como 1
         if (checkColor(pixelColor, roadColor)) {
-            falseMap[x][y] = 1;
+            roadMap[x][y] = 1;
+        } else {
+            roadMap[x][y] = 0;
         }
-        
-        return falseMap; //retorna mapa com estradas
     }  
+    return roadMap; //retorna mapa com estradas
 }
 

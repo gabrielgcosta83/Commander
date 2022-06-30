@@ -6,7 +6,7 @@ class Unit {
         this.coord = coord;
         this.team = team;
         this.speed = 1;
-        this.isMovingX = false;
+        this.isMoving = false;
         this.isMovingY = false;
         this.isSelected = false;
         this.destCoord = [];
@@ -23,16 +23,19 @@ class Unit {
     }
 
     movement(destCoord) { // Verifica se posicao de destino é diferente da posição de origem isMoving
-        if (destCoord[0] != this.coord[0]) {
-            this.isMovingX = true;
-            this.destCoord[0] = destCoord[0];
-            showMsg("Movendo Unidade...");
-        }
-        if (destCoord[1] != this.coord[1]) {
-            this.isMovingY = true;
-            this.destCoord[1] = destCoord[1];
-            showMsg("Movendo Unidade...");
-        }
+        if (destCoord != this.coord) {
+            this.isMoving = true;
+        }       
+        // if (destCoord[0] != this.coord[0]) {
+        //     this.isMovingX = true;
+        //     this.destCoord[0] = destCoord[0];
+        //     showMsg("Movendo Unidade...");
+        // }
+        // if (destCoord[1] != this.coord[1]) {
+        //     this.isMovingY = true;
+        //     this.destCoord[1] = destCoord[1];
+        //     showMsg("Movendo Unidade...");
+        // }
     }
 
     setPath(path) {
@@ -89,8 +92,7 @@ function moveUnitToClick(mapa) {
         unitTable.forEach(unit => {
             if (!checkCoordUnit(newCoord,unit)) { // verifica se clicou em uma unidade
                 showErrorMsg("Você deve clicar em uma unidade");
-
-            
+                return;
             } else { // Se clicou na unidade
                 showMsg("Clique na posição que deseja mover")
                 unit.isSelected = true;
@@ -99,11 +101,11 @@ function moveUnitToClick(mapa) {
                     const isRoad = checkRoad(destCoord); // Verifica se é uma estrada
                     if (isRoad == null) {
                         showErrorMsg("As unidades só se movem em estradas");     
-                        unit.selected = false;                        
+                        unit.selected = false;                    
 
                     // Se for estrada, encontra e define menor caminho e inicia o movimento.
                     } else {
-                        const path = bfs(unit.Coord, destCoord);
+                        const path = getPath(unit.coord, destCoord);
                         if (path == null) {
                             showErrorMsg("Nenhum caminho encontrado")
                         }
@@ -144,11 +146,8 @@ function checkCoordUnit(coord,unit) {
 
 //retorna corRGB do Mapa em coord
 function getRGB(coord) {
-    const pixelColor = [ CanvasMap.MapArray[(CanvasMap.width * coord[1] + coord[0]) * 4],
-        CanvasMap.CanvasMapArray[(CanvasMap.width*coord[1] + coord[0]) * 4 + 1],
-        CanvasMap.MapArray[(CanvasMap.width*coord[1] + coord[0]) * 4 + 2], 
-        255 ];
-    
+    const index = coordToIndex(coord, 1109);
+    const pixelColor = [CanvasMap.MapArray[index], CanvasMap.MapArray[index + 1], CanvasMap.MapArray[index + 2], CanvasMap.MapArray[index + 3]];
     return pixelColor;
 }
 
@@ -159,8 +158,8 @@ function checkColor(pixelColor, testColor) {
         pixelColor[1] == testColor[1] &&
         pixelColor[2] == testColor[2] &&
         pixelColor[3] == testColor[3] 
-    ) { return true }
-    else { return false } 
+    ) return true 
+    else  return false 
 }
 
 //Transforma de Coord para indice ImageData para Coord

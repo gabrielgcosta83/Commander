@@ -6,6 +6,8 @@ let CanvasMap = {
     canvas : document.getElementById("mapa__area"),
     width : 1109,
     height : 1109,
+    MapArray: [],
+    
     start : function() {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
@@ -33,6 +35,12 @@ function showErrorMsg(errorMsg) {
     error_msg.textContent = errorMsg;
 }
 
+function showCoordMsg(coordMsg) {
+    let coord_msg = document.querySelector("#coord_msg");
+    coord_msg.setAttribute("style", "color: blue");
+    coord_msg.textContent = coordMsg;
+}
+
 //Clica para Adicionar Unidade
 buttonAdd.addEventListener("click", function(event) {  
     event.preventDefault();
@@ -49,10 +57,11 @@ buttonAdd.addEventListener("click", function(event) {
 CanvasMap.canvas.addEventListener("click",function(event) {
     event.preventDefault();
     showMsg("Clique na unidade que deseja mover")
-    testButtonClick(CanvasMap.canvas);
-    moveUnitToClick(Map.canvas);
+    // testButtonClick(CanvasMap.canvas);
+    moveUnitToClick(CanvasMap.canvas);
 })
 
 CanvasMap.canvas.addEventListener("mousemove", function(event) {
-    showMsg(event.offsetX + "," + event.offsetY);
+    let pixelColor = getRGB([event.offsetX, event.offsetY]);
+    showCoordMsg(event.offsetX + "," + event.offsetY + ";" + pixelColor);
 })
