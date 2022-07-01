@@ -7,7 +7,6 @@ class Unit {
         this.team = team;
         this.speed = 1;
         this.isMoving = false;
-        this.isMovingY = false;
         this.isSelected = false;
         this.destCoord = [];
         this.movementPath = [];
@@ -30,12 +29,16 @@ class Unit {
 
     setPath(path) {
         this.movementPath = path;
-    }        
+    }
+
+    setSelected(state) {
+        this.isSelected = state;
+    }
 }
 
 //Adiciona unidade no mapa
-function addUnitToClick(mapa) { 
-    mapa.addEventListener("click", function (pos) {
+function addUnitToMap() {
+    CanvasMap.canvas.addEventListener("click", function (pos) {
         const coord = [pos.offsetX, pos.offsetY];
         const team = teamSelected();
         if (team == null) {
@@ -52,7 +55,6 @@ function addUnitToClick(mapa) {
             unit.addToTable();
             }
         }
-        
     }, { once: true });
 }
 
@@ -75,41 +77,54 @@ function addPointToTable(coord,color) {
     pointTable.push(point);
 }
 
-function moveUnitToClick(newCoord) {
-   unitTable.forEach(unit => {
-            if (!checkCoordUnit(newCoord,unit)) { // verifica se clicou em uma unidade
-                showErrorMsg("Você deve clicar em uma unidade");
-                return;
-            } else { // Se clicou na unidade
-                showMsg("Clique na posição que deseja mover")
-                unit.isSelected = true;
-                CanvasMap.canvas.removeEventListener("click",moveUnitToClick)
-                mapa.addEventListener("click", function(pos) { 
-                    const destCoord = [pos.offsetX, pos.offsetY]; // Determina o click da nova posicao
-                    const isRoad = checkRoad(destCoord); // Verifica se é uma estrada
-                    if (isRoad == null) {
-                        showErrorMsg("As unidades só se movem em estradas");     
-                        unit.selected = false;
-                        CanvasMap.canvas.addEventListener("click",MapClickSelect);                    
+function selectUnitOnMap() {
+    let coord = [];
 
-                    // Se for estrada, encontra e define menor caminho e inicia o movimento.
-                    } else {
-                        const path = getPath(unit.coord, destCoord);
-                        if (path == null) {
-                            showErrorMsg("Nenhum caminho encontrado")
-                            CanvasMap.canvas.addEventListener("click",MapClickSelect);
-                        }
-                        else {
-                            unit.movement(destCoord);
-                            unit.setPath(path);
-                            unit.selected = false;
-                            CanvasMap.canvas.addEventListener("click",MapClickSelect);
-                        }
-                    }           
-              }, { once: true })
+    // Clica e determina a posição
+    CanvasMap.canvas.addEventListener("click", function(pos) {
+        coord =  [pos.offsetX, pos.offsetY]; 
+
+        // Verifica qual unidade está na posição
+        for (i = 0; i < unitTable.length ; i++) {
+            let selectedUnitId = unitTable[i].id;
+            
+            // verifica se clicou em uma unidade
+            if (checkCoordUnit(coord,selectedUnitId)) {  
+                unitTable[i].setSelected(true);
+            } else {
+                showErrorMsg("Voce deve clicar em uma unidade");
             }
-        })
+        }
+        CanvasMap.canvas.removeEventListener("click",arguments.callee);
+    
+    }) , { once: true }
+}
 
+function selectRoadOnMap() {
+    showMsg("Clique na nova posição");
+    const roadCoord = [];
+    const selectedCoord = [];
+
+    CanvasMap.canvas.addEventListener("click", function(pos) { 
+       selectedCoord = [pos.offsetX, pos.offsetY]; // Determina o click da nova posicao
+       roadCoord = checkRoad(selectedCoord); // Ajusta coordenada a uma estrada proxima
+    }) , { once: true }
+   
+    return roadCoord; 
+}
+
+function moveUnitOnMap(id,selectedCoord) {
+    const path = getPath(unitTable[id].coord, selectedCoord);
+    
+    if (path == null) {
+        showErrorMsg("Nenhum caminho encontrado")
+    } else {
+        unitTable[id].movement(selectedCoord);
+        unitTable[id].setPath(path);
+        unitTable[id].setSelected(false);
+    }
+}           
+    
 // function testButtonClick(mapa) {
 //     mapa.addEventListener("click", function (pos) {
 //         const newCoord = [pos.offsetX, pos.offsetY];
@@ -123,10 +138,18 @@ function adjCoord(coord,size) {
     return adjCoord;
 }
 
+function getSelectedUnitId() {
+    for (i = 0; i < unitTable.length; i++) {
+        if (unitTable[i].isSelected == true) {
+            return unitTable[i].id;
+       }
+    }
+}
 
 //Verifica se existe unidade na coordenada
-function checkCoordUnit(coord,unit) {
-     if ((coord[0] >= (unit.coord[0]-10)) && (coord[0] <= (unit.coord[0]+10)) && (coord[1] >= (unit.coord[1]-10)) && (coord[1] <= (unit.coord[1]+10)))
+function checkCoordUnit(coord,id) {
+    console.log(unitTable[id].coord);
+     if ((coord[0] >= (unitTable[id].coord[0]-10)) && (coord[0] <= (unitTable[id].coord[0]+10)) && (coord[1] >= (unitTable[id].coord[1]-10)) && (coord[1] <= (unitTable[id].coord[1]+10)))
         return true;
     else
         return false; 

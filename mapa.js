@@ -43,8 +43,8 @@ function drawPoint(coord,color) {
 }
 
 function drawUnitMoving(unit) {
-    let coord
-    CanvasMap.context.strokeStyle = "white"
+    let coord = [];
+    CanvasMap.context.strokeStyle = "yellow"
     CanvasMap.context.strokeRect(unit.coord[0] - (unit.size/2), unit.coord[1] - (unit.size/2), 20, 20);
     CanvasMap.context.beginPath();
     CanvasMap.context.moveTo(unit.coord[0] , unit.coord[1]);
@@ -62,10 +62,10 @@ function drawUnitSelected(unit) {
     }
 }
     
-function testRoad(coord) {
-    const color = getRGB(coord);
-    return (checkColor(color, roadColor))
-}
+// function testRoad(coord) {
+//     const color = getRGB(coord);
+//     return (checkColor(color, roadColor))
+// }
 
 
 function moveUnit(unit) {
@@ -77,7 +77,6 @@ function moveUnit(unit) {
         const nextStep = path.shift();
         if (path.length == 0) {
             unit.isMoving = false;
-            unit.isSelected = false;
             showMsg("Unidade na nova posição");
             return;
         } else {

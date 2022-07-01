@@ -1,5 +1,6 @@
 const buttonMove = document.getElementById("button__move");
 const buttonAdd = document.getElementById("button__add");
+const buttonSelect = document.getElementById("button__select");
 
 // Canvas
 let CanvasMap = {
@@ -45,22 +46,47 @@ function showCoordMsg(coordMsg) {
 buttonAdd.addEventListener("click", function(event) {  
     event.preventDefault();
     showMsg("Clique na posição desejada")
-    addUnitToClick(CanvasMap.canvas);
+    addUnitToMap(CanvasMap.canvas);
 });
 
-// //  Clica para Mover Unidade
-// buttonMove.addEventListener("click", function(event) {
-//     event.preventDefault();
-//     showMsg("Clique na unidade que deseja mover")
-// });
-
-CanvasMap.canvas.addEventListener("click",MapClickSelect);
-
-function MapClickSelect(event) {
+buttonMove.addEventListener("click",function(event) {
     event.preventDefault();
-    const newCoord = [pos.offsetX, pos.offsetY];
-    moveUnitToClick(newCoord);
-}
+    
+    let roadCoord = [];
+    let selectedCoord = [];
+
+    //Encontra Unidade Selecionada
+    let selectedUnitId = getSelectedUnitId();
+    
+    //
+    CanvasMap.canvas.addEventListener("click", function(pos) { 
+        selectedCoord = [pos.offsetX, pos.offsetY]; // Determina o click da nova posicao
+        roadCoord = checkRoad(selectedCoord); // Ajusta coordenada a uma estrada proxima
+
+        if (roadCoord == null) {
+            showErrorMsg("As unidades só se movem em estradas");     
+            return;
+        }
+
+        moveUnitOnMap(selectedUnitId, roadCoord);
+        CanvasMap.canvas.removeEventListener("click",arguments.callee);
+    }) , { once: true }     
+})
+
+buttonSelect.addEventListener("click", function(event) {
+    event.preventDefault();
+    showMsg("Escolha uma unidade");
+    selectUnitOnMap();
+})
+
+
+
+// function MapClick(event) {
+//     let unitId;
+//     const clickCoord = [event.offsetX, event.offsetY];
+//     unitId = selectUnitOnMap(clickCoord);
+//     moveUnitOnMap(unitId);
+// }
 
 CanvasMap.canvas.addEventListener("mousemove", function(event) {
     let pixelColor = getRGB([event.offsetX, event.offsetY]);
